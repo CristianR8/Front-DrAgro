@@ -1,20 +1,107 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>
-      Blank
-    </ion-title>
+    <!-- Dr. Agro logo -->
+    <img
+      src="/assets/images/menu.png"
+      class="mx-auto"
+      style="max-height:40px;padding: 10px;"
+      alt="Dr. Agro"
+    />
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content [fullscreen]="true" class="pt-4">
+  <div class="container">
+    <!-- Subtitle + Title -->
+     <div class="text-center mt-4">
+      <img
+        src="/assets/images/Logotipo-DR-AGRO-Color.png"
+        style="max-height:200px;"
+        alt="Agrosavia"
+      />
+    </div>
+    <div class="text-center mb-4">
+      <h4 class="fw-bold mb-1">PERFIL DE USUARIO</h4>
+      <small class="text-secondary">
+        Por favor selecciona la opción que mejor se ajuste a tu perfil
+      </small>
+    </div>
 
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
+    <!-- Formulario con Bootstrap -->
+    <form>
+      <!-- Radios -->
+      <div class="mb-3">
+        <div *ngFor="let opt of [
+            {id:'asistente', label:'Asistente técnico'},
+            {id:'productor',  label:'Productor'},
+            {id:'estudiante',label:'Estudiante'},
+            {id:'investigador',label:'Investigador'},
+            {id:'docente',   label:'Docente'},
+            {id:'general',   label:'Público en general'}
+          ]" class="form-check">
+          <input
+            class="form-check-input"
+            type="radio"
+            name="perfil"
+            [id]="opt.id"
+            [(ngModel)]="perfilSeleccionado"
+            [value]="opt.id"
+          />
+          <label class="form-check-label" [for]="opt.id">
+            {{ opt.label }}
+          </label>
+        </div>
+      </div>
+
+      <!-- Inputs -->
+      <div class="mb-3">
+        <label for="departamento" class="form-label">Departamento</label>
+        <input
+          id="departamento"
+          name="departamento"
+          type="text"
+          class="form-control"
+          [(ngModel)]="usuario.departamento"
+        />
+      </div>
+      <div class="mb-3">
+        <label for="municipio" class="form-label">Municipio</label>
+        <input
+          id="municipio"
+          name="municipio"
+          type="text"
+          class="form-control"
+          [(ngModel)]="usuario.municipio"
+        />
+      </div>
+      <div class="mb-3">
+        <label for="correo" class="form-label">Correo</label>
+        <input
+          id="correo"
+          name="correo"
+          type="email"
+          class="form-control"
+          [(ngModel)]="usuario.correo"
+        />
+      </div>
+
+      <!-- Botón verde -->
+      <button
+        type="button"
+        class="btn btn-success w-100"
+        (click)="guardarInformacion()"
+      >
+        Guardar información
+      </button>
+    </form>
+
+    <!-- Agrosavia logo al pie -->
+    <div class="text-center mt-4">
+      <img
+        src="/assets/images/agrosavia_color.png"
+        style="max-height:30px;"
+        alt="Agrosavia"
+      />
+    </div>
   </div>
 </ion-content>
