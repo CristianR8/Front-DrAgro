@@ -1,37 +1,26 @@
-/*
- * App Global CSS
- * ----------------------------------------------------------------------------
- * Put style rules here that you want to apply globally. These styles are for
- * the entire app and not just one component. Additionally, this file can be
- * used as an entry point to import other CSS/Sass files to be included in the
- * output CSS.
- * For more information on global stylesheets, visit the documentation:
- * https://ionicframework.com/docs/layout/global-stylesheets
- */
+// 1) Bootstrap functions + variable map
+@import "../node_modules/bootstrap/scss/functions";
+@import "../node_modules/bootstrap/scss/variables";
+@import "../node_modules/bootstrap/scss/maps";
 
-/* Core CSS required for Ionic components to work properly */
-@import "@ionic/angular/css/core.css";
+// 2) Override Bootstrap’s theme colors
+$theme-colors: (
+  "primary":   #3498db,
+  "secondary": #2ecc71,
+  "success":   #28a745,
+  "danger":    #e74c3c,
+  "warning":   #f1c40f,
+  "info":      #17a2b8
+);
 
-/* Basic CSS for apps built with Ionic */
-@import "@ionic/angular/css/normalize.css";
-@import "@ionic/angular/css/structure.css";
-@import "@ionic/angular/css/typography.css";
-@import "@ionic/angular/css/display.css";
+// 3) Now bring in the rest of Bootstrap
+@import "../node_modules/bootstrap/scss/bootstrap";
 
-/* Optional CSS utils that can be commented out */
-@import "@ionic/angular/css/padding.css";
-@import "@ionic/angular/css/float-elements.css";
-@import "@ionic/angular/css/text-alignment.css";
-@import "@ionic/angular/css/text-transformation.css";
-@import "@ionic/angular/css/flex-utils.css";
-
-/**
- * Ionic Dark Mode
- * -----------------------------------------------------
- * For more info, please see:
- * https://ionicframework.com/docs/theming/dark-mode
- */
-
-/* @import "@ionic/angular/css/palettes/dark.always.css"; */
-/* @import "@ionic/angular/css/palettes/dark.class.css"; */
-@import '@ionic/angular/css/palettes/dark.system.css';
+// 4) Map those same colors into Ionic’s CSS variables
+:root {
+  --ion-color-primary:   map-get($theme-colors, "primary");
+  --ion-color-secondary: map-get($theme-colors, "secondary");
+  --ion-color-tertiary:  #9b59b6;          // whatever you like
+  --ion-text-color:      #333333;
+  --ion-background-color:#f8f9fa;
+}
