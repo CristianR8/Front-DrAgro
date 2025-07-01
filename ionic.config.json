@@ -1,0 +1,7 @@
+{
+  "name": "doctor-agro",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
