@@ -13,7 +13,7 @@
 <ion-content [fullscreen]="true" class="pt-4">
   <div class="container">
     <!-- Subtitle + Title -->
-     <div class="text-center mt-4">
+    <div class="text-center mt-4">
       <img
         src="../assets/images/Logotipo-DR-AGRO-Color.png"
         style="max-height:200px;"
@@ -29,66 +29,148 @@
 
     <!-- Formulario con Bootstrap -->
     <form>
-      <!-- Radios -->
-      <div class="mb-3">
-        <div *ngFor="let opt of [
-            {id:'asistente', label:'Asistente técnico'},
-            {id:'productor',  label:'Productor'},
-            {id:'estudiante',label:'Estudiante'},
-            {id:'investigador',label:'Investigador'},
-            {id:'docente',   label:'Docente'},
-            {id:'general',   label:'Público en general'}
-          ]" class="form-check">
-          <input
-            class="form-check-input"
-            type="radio"
-            name="perfil"
-            [id]="opt.id"
-            [(ngModel)]="perfilSeleccionado"
-            [value]="opt.id"
-          />
-          <label class="form-check-label" [for]="opt.id">
-            {{ opt.label }}
-          </label>
+      <!-- Cards seleccionables -->
+      <div class="mb-4">
+        <div class="row g-2 g-md-3">
+          <div 
+            *ngFor="let opt of profileOptions" 
+            class="col-6 col-sm-6 col-md-4 col-lg-4"
+          >
+            <div 
+              class="profile-card p-2 rounded-3 text-center h-100"
+              [class.selected]="perfilSeleccionado === opt.id"
+              (click)="selectProfile(opt.id)"
+            >
+              <input 
+                type="radio" 
+                name="perfil" 
+                [id]="opt.id"
+                [(ngModel)]="perfilSeleccionado"
+                [value]="opt.id"
+                class="form-check-input"
+                style="display: none;"
+              />
+              <i [class]="opt.icon + ' profile-icon mb-1'"></i>
+              <h6 class="mb-1 card-title">{{ opt.label }}</h6>
+              <small class="text-muted card-description">{{ opt.description }}</small>
+            </div>
+          </div>
         </div>
       </div>
 
-      <!-- Inputs -->
+      <!-- Inputs con validaciones -->
       <div class="mb-3">
-        <label for="departamento" class="form-label">Departamento</label>
-        <input
-          id="departamento"
-          name="departamento"
-          type="text"
-          class="form-control"
-          [(ngModel)]="usuario.departamento"
-        />
+        <label for="departamento" class="form-label">Departamento <span class="text-danger">*</span></label>
+        <div class="position-relative">
+          <input
+            id="departamento"
+            name="departamento"
+            type="text"
+            class="form-control"
+            [(ngModel)]="departamentoText"
+            (input)="filterDepartamentos($event)"
+            (focus)="showDepartamentos = true"
+            (blur)="hideDepartamentosDropdown()"
+            placeholder="Escriba o seleccione un departamento"
+            autocomplete="off"
+            [class.is-invalid]="departamentoInvalid"
+            [class.is-valid]="departamentoValid"
+          />
+          <div 
+            class="dropdown-menu custom-dropdown"
+            [class.show]="showDepartamentos && filteredDepartamentos.length > 0"
+          >
+            <div class="dropdown-header" *ngIf="filteredDepartamentos.length > 5">
+              {{ filteredDepartamentos.length }} departamentos encontrados
+            </div>
+            <button 
+              *ngFor="let dept of filteredDepartamentos" 
+              type="button"
+              class="dropdown-item"
+              (mousedown)="selectDepartamento(dept)"
+              [title]="dept.name"
+            >
+              {{ dept.name }}
+            </button>
+          </div>
+          <div class="invalid-feedback" *ngIf="departamentoInvalid">
+            Por favor seleccione un departamento válido de Colombia.
+          </div>
+        </div>
       </div>
+
       <div class="mb-3">
-        <label for="municipio" class="form-label">Municipio</label>
-        <input
-          id="municipio"
-          name="municipio"
-          type="text"
-          class="form-control"
-          [(ngModel)]="usuario.municipio"
-        />
+        <label for="municipio" class="form-label">Municipio <span class="text-danger">*</span></label>
+        <div class="position-relative">
+          <input
+            id="municipio"
+            name="municipio"
+            type="text"
+            class="form-control"
+            [(ngModel)]="municipioText"
+            (input)="filterMunicipios($event)"
+            (focus)="showMunicipios = true"
+            (blur)="hideMunicipiosDropdown()"
+            placeholder="Escriba o seleccione un municipio"
+            autocomplete="off"
+            [disabled]="!selectedDepartamento"
+            [class.is-invalid]="municipioInvalid"
+            [class.is-valid]="municipioValid"
+          />
+          <div 
+            class="dropdown-menu custom-dropdown"
+            [class.show]="showMunicipios && filteredMunicipios.length > 0"
+          >
+            <div class="dropdown-header" *ngIf="filteredMunicipios.length > 5">
+              {{ filteredMunicipios.length }} municipios encontrados
+            </div>
+            <button 
+              *ngFor="let mun of filteredMunicipios" 
+              type="button"
+              class="dropdown-item"
+              (mousedown)="selectMunicipio(mun)"
+              [title]="mun.name"
+            >
+              {{ mun.name }}
+            </button>
+          </div>
+          <div class="invalid-feedback" *ngIf="municipioInvalid">
+            Por favor seleccione un municipio válido del departamento seleccionado.
+          </div>
+          <div class="form-text" *ngIf="!selectedDepartamento">
+            Primero debe seleccionar un departamento
+          </div>
+        </div>
       </div>
+
       <div class="mb-3">
-        <label for="correo" class="form-label">Correo</label>
+        <label for="correo" class="form-label">Correo electrónico <span class="text-danger">*</span></label>
         <input
           id="correo"
           name="correo"
           type="email"
           class="form-control"
           [(ngModel)]="usuario.correo"
+          (input)="validateEmail()"
+          (blur)="validateEmail()"
+          placeholder="ejemplo@correo.com"
+          [class.is-invalid]="emailInvalid"
+          [class.is-valid]="emailValid"
+          maxlength="100"
         />
+        <div class="invalid-feedback" *ngIf="emailInvalid">
+          {{ emailErrorMessage }}
+        </div>
+        <div class="form-text" *ngIf="!emailInvalid && !emailValid">
+          Ingrese un correo electrónico válido
+        </div>
       </div>
 
       <!-- Botón verde -->
       <button
         type="button"
         class="btn btn-success w-100"
+        [disabled]="!isFormValid()"
         (click)="guardarInformacion()"
       >
         Guardar información
