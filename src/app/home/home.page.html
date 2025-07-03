@@ -10,7 +10,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true" class="pt-4 ion-padding">
+<ion-content [fullscreen]="true" class="pt-4">
   <div class="container">
     <!-- Subtitle + Title -->
     <div class="text-center mt-4">
@@ -32,18 +32,18 @@
       <!-- Cards seleccionables -->
       <div class="mb-4">
         <div class="row g-2 g-md-3">
-          <div
-            *ngFor="let opt of profileOptions"
+          <div 
+            *ngFor="let opt of profileOptions" 
             class="col-6 col-sm-6 col-md-4 col-lg-4"
           >
-            <div
+            <div 
               class="profile-card p-2 rounded-3 text-center h-100"
               [class.selected]="perfilSeleccionado === opt.id"
               (click)="selectProfile(opt.id)"
             >
-              <input
-                type="radio"
-                name="perfil"
+              <input 
+                type="radio" 
+                name="perfil" 
                 [id]="opt.id"
                 [(ngModel)]="perfilSeleccionado"
                 [value]="opt.id"
@@ -76,15 +76,15 @@
             [class.is-invalid]="departamentoInvalid"
             [class.is-valid]="departamentoValid"
           />
-          <div
+          <div 
             class="dropdown-menu custom-dropdown"
             [class.show]="showDepartamentos && filteredDepartamentos.length > 0"
           >
             <div class="dropdown-header" *ngIf="filteredDepartamentos.length > 5">
               {{ filteredDepartamentos.length }} departamentos encontrados
             </div>
-            <button
-              *ngFor="let dept of filteredDepartamentos"
+            <button 
+              *ngFor="let dept of filteredDepartamentos" 
               type="button"
               class="dropdown-item"
               (mousedown)="selectDepartamento(dept)"
@@ -117,15 +117,15 @@
             [class.is-invalid]="municipioInvalid"
             [class.is-valid]="municipioValid"
           />
-          <div
+          <div 
             class="dropdown-menu custom-dropdown"
             [class.show]="showMunicipios && filteredMunicipios.length > 0"
           >
             <div class="dropdown-header" *ngIf="filteredMunicipios.length > 5">
               {{ filteredMunicipios.length }} municipios encontrados
             </div>
-            <button
-              *ngFor="let mun of filteredMunicipios"
+            <button 
+              *ngFor="let mun of filteredMunicipios" 
               type="button"
               class="dropdown-item"
               (mousedown)="selectMunicipio(mun)"
@@ -169,11 +169,20 @@
       <!-- Botón verde -->
       <button
         type="button"
-        class="btn btn-success w-100"
+        class="btn btn-success w-100 mb-2"
         [disabled]="!isFormValid()"
         (click)="guardarInformacion()"
       >
         Guardar información
+      </button>
+
+      <!-- Botón temporal para consultar datos (solo para debugging) -->
+      <button
+        type="button"
+        class="btn btn-outline-info w-100"
+        (click)="consultarDatos()"
+      >
+        🔍 Ver datos guardados (Debug)
       </button>
     </form>
 
