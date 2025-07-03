@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
+import { SqliteService } from '../services/sqlite.service';
 
 interface Departamento {
   id: number;
@@ -40,17 +41,17 @@ export class HomePage implements OnInit {
   // Arrays para almacenar datos de la API
   departamentos: Departamento[] = [];
   municipios: Municipio[] = [];
-  
+
   // Variables para filtros y dropdown
   filteredDepartamentos: Departamento[] = [];
   filteredMunicipios: Municipio[] = [];
   showDepartamentos: boolean = false;
   showMunicipios: boolean = false;
-  
+
   // Variables para input text
   departamentoText: string = '';
   municipioText: string = '';
-  
+
   // Variables para validación
   selectedDepartamento: Departamento | null = null;
   selectedMunicipio: Municipio | null = null;
@@ -101,9 +102,13 @@ export class HomePage implements OnInit {
     }
   ];
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private sqliteService: SqliteService
+  ) {}
 
-  ngOnInit() {
+  async ngOnInit() {
+    await this.sqliteService.initialize();
     this.loadDepartamentos();
   }
 
@@ -143,7 +148,7 @@ export class HomePage implements OnInit {
   filterDepartamentos(event: any) {
     const query = event.target.value.toLowerCase();
     this.departamentoText = event.target.value;
-    
+
     if (query.length === 0) {
       this.filteredDepartamentos = [...this.departamentos];
       this.selectedDepartamento = null;
@@ -157,10 +162,10 @@ export class HomePage implements OnInit {
     );
 
     // Si hay coincidencia exacta, seleccionar automáticamente
-    const exactMatch = this.departamentos.find(dept => 
+    const exactMatch = this.departamentos.find(dept =>
       dept.name.toLowerCase() === query.toLowerCase()
     );
-    
+
     if (exactMatch && exactMatch !== this.selectedDepartamento) {
       this.selectedDepartamento = exactMatch;
       this.loadMunicipios(exactMatch.id);
@@ -189,7 +194,7 @@ export class HomePage implements OnInit {
   filterMunicipios(event: any) {
     const query = event.target.value.toLowerCase();
     this.municipioText = event.target.value;
-    
+
     if (!this.selectedDepartamento) {
       return;
     }
@@ -206,10 +211,10 @@ export class HomePage implements OnInit {
     );
 
     // Si hay coincidencia exacta, seleccionar automáticamente
-    const exactMatch = this.municipios.find(mun => 
+    const exactMatch = this.municipios.find(mun =>
       mun.name.toLowerCase() === query.toLowerCase()
     );
-    
+
     if (exactMatch) {
       this.selectedMunicipio = exactMatch;
     } else {
@@ -261,9 +266,9 @@ export class HomePage implements OnInit {
       return;
     }
 
-    const isValid: boolean = !!(this.selectedDepartamento && 
+    const isValid: boolean = !!(this.selectedDepartamento &&
                    this.selectedDepartamento.name.toLowerCase() === this.departamentoText.toLowerCase());
-    
+
     this.departamentoInvalid = !isValid;
     this.departamentoValid = isValid;
   }
@@ -282,9 +287,9 @@ export class HomePage implements OnInit {
       return;
     }
 
-    const isValid: boolean = !!(this.selectedMunicipio && 
+    const isValid: boolean = !!(this.selectedMunicipio &&
                    this.selectedMunicipio.name.toLowerCase() === this.municipioText.toLowerCase());
-    
+
     this.municipioInvalid = !isValid;
     this.municipioValid = isValid;
   }
@@ -292,7 +297,7 @@ export class HomePage implements OnInit {
   // Validar email con múltiples reglas
   validateEmail(): void {
     const email: string | undefined = this.usuario.correo?.trim();
-    
+
     if (!email) {
       this.emailInvalid = false;
       this.emailValid = false;
@@ -355,7 +360,7 @@ export class HomePage implements OnInit {
     }
 
     const [localPart, domain] = parts;
-    
+
     // Validar parte local
     if (localPart.length === 0 || localPart.startsWith('.') || localPart.endsWith('.')) {
       this.emailInvalid = true;
@@ -392,47 +397,55 @@ export class HomePage implements OnInit {
   }
 
   // Guardar información
-  guardarInformacion() {
+  async guardarInformacion() {
     if (!this.isFormValid()) {
       // Mostrar errores si el formulario no es válido
       if (!this.perfilSeleccionado) {
         alert('Por favor seleccione un perfil de usuario.');
         return;
       }
-      
+
       if (!this.departamentoValid) {
         this.validateDepartamento();
         return;
       }
-      
+
       if (!this.municipioValid) {
         this.validateMunicipio();
         return;
       }
-      
+
       if (!this.emailValid) {
         this.validateEmail();
         return;
       }
-      
+
       return;
     }
 
     const datosCompletos = {
       perfil: this.perfilSeleccionado,
-      departamento: this.selectedDepartamento?.name,
-      departamentoId: this.selectedDepartamento?.id,
-      municipio: this.selectedMunicipio?.name,
-      municipioId: this.selectedMunicipio?.id,
+      departamento: this.selectedDepartamento!.name,
+      departamentoId: this.selectedDepartamento!.id,
+      municipio: this.selectedMunicipio!.name,
+      municipioId: this.selectedMunicipio!.id,
       correo: this.usuario.correo.trim().toLowerCase()
     };
 
     console.log('Datos a guardar:', datosCompletos);
-    
+
     // Aquí puedes agregar la lógica para enviar los datos al backend
     // Ejemplo:
     // this.http.post('tu-endpoint', datosCompletos).subscribe(...)
-    
+    try {
+      const res = await this.sqliteService.addUsuario(datosCompletos);
+      console.log('Insert ID', res.changes?.lastId);
+      alert('Information guardada correctamente en SQLite!');
+    } catch (err) {
+      console.error("Error al guardar en SQLite:", err);
+      alert("No se pudo guardar en la base de datos");
+    }
+
     alert('Información guardada correctamente!');
   }
 
