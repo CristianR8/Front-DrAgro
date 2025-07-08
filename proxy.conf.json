@@ -1,0 +1,13 @@
+{
+    "/api": {
+      "target": "https://707aa51ab0ef.ngrok-free.app",
+      "secure": false,
+      "changeOrigin": true,
+      "pathRewrite": {
+        "^/api": ""
+      },
+      "headers": {
+        "ngrok-skip-browser-warning": "true"
+      }
+    }
+  }

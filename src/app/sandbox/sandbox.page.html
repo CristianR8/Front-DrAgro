@@ -1,0 +1,77 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <img
+      src="../assets/images/menu.png"
+      class="mx-auto"
+      style="max-height: 40px; padding: 10px;"
+      alt="Dr. Agro"
+    />
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="pt-4">
+  <div class="container">
+    <!-- Logo + título -->
+    <div class="text-center mt-4">
+      <img
+        src="../assets/images/Logotipo-DR-AGRO-Color.png"
+        style="max-height: 200px;"
+        alt="Agrosavia"
+      />
+    </div>
+    <div class="text-center mb-4">
+      <h4 class="fw-bold mb-1">CONSULTA DE DATOS</h4>
+      <small class="text-secondary">
+        Consulta y descarga los datos disponibles desde la API
+      </small>
+    </div>
+
+    <!-- Botones de acción -->
+    <div class="d-grid gap-2 mb-4">
+      <button type="button" class="btn btn-primary" (click)="cargarDatos()">🔄 Cargar Datos</button>
+      <button type="button" class="btn btn-outline-success" (click)="imprimir()">🖨️ Imprimir Vista</button>
+    </div>
+
+    <!-- Sección Cultivos -->
+    <div class="mb-4">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <h5 class="mb-0 fw-bold">🌿 Cultivos</h5>
+        <button class="btn btn-sm btn-outline-secondary" (click)="descargarJSON('cultivos', cultivos)">⬇️ Descargar</button>
+      </div>
+      <div class="border rounded p-2 bg-light" style="max-height: 250px; overflow-y: auto;">
+        <pre class="mb-0 small">{{ cultivos | json }}</pre>
+      </div>
+    </div>
+
+    <!-- Sección Etapas -->
+    <div class="mb-4">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <h5 class="mb-0 fw-bold">🌀 Etapas del ciclo fenológico</h5>
+        <button class="btn btn-sm btn-outline-secondary" (click)="descargarJSON('etapas', etapas)">⬇️ Descargar</button>
+      </div>
+      <div class="border rounded p-2 bg-light" style="max-height: 250px; overflow-y: auto;">
+        <pre class="mb-0 small">{{ etapas | json }}</pre>
+      </div>
+    </div>
+
+    <!-- Sección Partes de planta -->
+    <div class="mb-4">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <h5 class="mb-0 fw-bold">🌱 Partes de la planta</h5>
+        <button class="btn btn-sm btn-outline-secondary" (click)="descargarJSON('partes', partes)">⬇️ Descargar</button>
+      </div>
+      <div class="border rounded p-2 bg-light" style="max-height: 250px; overflow-y: auto;">
+        <pre class="mb-0 small">{{ partes | json }}</pre>
+      </div>
+    </div>
+
+    <!-- Logo inferior -->
+    <div class="text-center mt-4">
+      <img
+        src="/assets/images/agrosavia_color.png"
+        style="max-height:30px;"
+        alt="Agrosavia"
+      />
+    </div>
+  </div>
+</ion-content>
